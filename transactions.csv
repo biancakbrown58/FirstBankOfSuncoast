@@ -1,0 +1,4 @@
+AccountType,Amount,TransactionType,TransactionDate
+Checking,123,Deposit,04/25/2021 15:53:37
+Checking,222,Deposit,04/25/2021 15:54:20
+Checking,0,Withdraw,04/25/2021 15:54:38
