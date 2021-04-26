@@ -40,6 +40,10 @@ namespace FirstBankOfSuncoast
 
     class Transaction
     {
+        public void WithdrawChecking(Transaction transaction, int amountToWithdraw)
+        {
+            transaction.Amount = transaction.Amount - amountToWithdraw;
+        }
         public string AccountType { get; set; }
         public int Amount { get; set; }
         public string TransactionType { get; set; }
@@ -186,14 +190,11 @@ namespace FirstBankOfSuncoast
                         Console.WriteLine("Withdraw from which account? (C)hecking or (S)avings");
                         askUserCheckingOrSavings = Console.ReadLine().ToUpper();
 
-                        // var newBalance = 0;
-                        var negNumber = AskForInteger("How much?: -");
-
                         var checkIfEnoughFundsC = database.GetTransactions();
                         var accountCheckIfFundsC = checkIfEnoughFundsC.Where(transaction => transaction.AccountType == "Checking");
                         var countIfFundsC = accountCheckIfFundsC.Select(transaction => transaction.Amount);
                         var getSum = countIfFundsC.Sum();
-                        var removeBalance = (getSum - negNumber);
+
                         //Checking
                         if (askUserCheckingOrSavings == "C")
                         {
@@ -208,31 +209,39 @@ namespace FirstBankOfSuncoast
                             }
                             else
                             {
-                                // newBalance = removeBalance;
-                                // transaction.Amount = removeBalance;
-
-                                // Console.WriteLine($"{transaction.Withdraw()}");
+                                Console.WriteLine("How much: ");
+                                var amountToWithdraw = int.Parse(Console.ReadLine());
+                                transaction.WithdrawChecking(transaction, amountToWithdraw);
                                 Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
                                 database.AddTransaction(transaction);
                                 database.SaveTransactionToCSV();
-
+                                Console.WriteLine($"{transaction.Amount}");
                             }
-
-
                         }
                         //Savings
                         else
                         {
-                            Console.WriteLine("Withdrawing from Savings: ");
+                            Console.WriteLine("Withdrawing from Checking: ");
                             transaction.TransactionType = "Withdraw";
                             transaction.AccountType = "Savings";
-                            transaction.Amount = AskForInteger("How much?: ");
-                            Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
-                            database.AddTransaction(transaction);
-                            database.SaveTransactionToCSV();
+                            // transaction.Amount = AskForInteger("How much?: ");
+
+                            if (getSum == 0)
+                            {
+                                Console.WriteLine("You do not have enough funds to withdraw");
+                            }
+                            else
+                            {
+                                Console.WriteLine("How much: ");
+                                var amountToWithdraw = int.Parse(Console.ReadLine());
+                                transaction.WithdrawChecking(transaction, amountToWithdraw);
+                                Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
+                                database.AddTransaction(transaction);
+                                database.SaveTransactionToCSV();
+                                Console.WriteLine($"{transaction.Amount}");
+                            }
                         }
                         break;
-
                     // View Transactions
                     case "V":
                         var allTransactions = database.GetTransactions();
@@ -245,18 +254,13 @@ namespace FirstBankOfSuncoast
                     case "B":
                         var checkingBalance = database.GetTransactions();
                         var totalCheckingBalance = checkingBalance.Where(transaction => transaction.AccountType == "Checking");
-
-                        //where withdraw
                         var countChecking = totalCheckingBalance.Select(transaction => transaction.Amount).Sum();
                         Console.WriteLine($"Checking Balance: {countChecking}");
-
                         var savingsBalance = database.GetTransactions();
                         var totalSavingsBalance = savingsBalance.Where(transaction => transaction.AccountType == "Savings");
                         var countSavings = totalSavingsBalance.Select(transaction => transaction.Amount).Sum();
                         Console.WriteLine($"Savings Balance: {countSavings}");
                         break;
-
-                        //withdraw
                 }
             }
         }
