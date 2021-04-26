@@ -195,6 +195,7 @@ namespace FirstBankOfSuncoast
                         var countIfFundsC = accountCheckIfFundsC.Select(transaction => transaction.Amount);
                         var getSum = countIfFundsC.Sum();
 
+                        var amountToWithdraw = int.Parse(Console.ReadLine());
                         //Checking
                         if (askUserCheckingOrSavings == "C")
                         {
@@ -202,15 +203,15 @@ namespace FirstBankOfSuncoast
                             transaction.TransactionType = "Withdraw";
                             transaction.AccountType = "Checking";
                             // transaction.Amount = AskForInteger("How much?: ");
+                            Console.WriteLine("How much: ");
 
-                            if (getSum == 0)
+                            if (getSum < amountToWithdraw)
                             {
                                 Console.WriteLine("You do not have enough funds to withdraw");
                             }
                             else
                             {
-                                Console.WriteLine("How much: ");
-                                var amountToWithdraw = int.Parse(Console.ReadLine());
+                                Console.WriteLine($"{getSum}");
                                 transaction.WithdrawChecking(transaction, amountToWithdraw);
                                 Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
                                 database.AddTransaction(transaction);
@@ -221,19 +222,19 @@ namespace FirstBankOfSuncoast
                         //Savings
                         else
                         {
-                            Console.WriteLine("Withdrawing from Checking: ");
+                            Console.WriteLine("Withdrawing from Savings: ");
                             transaction.TransactionType = "Withdraw";
                             transaction.AccountType = "Savings";
                             // transaction.Amount = AskForInteger("How much?: ");
 
-                            if (getSum == 0)
+                            if (getSum < amountToWithdraw)
                             {
                                 Console.WriteLine("You do not have enough funds to withdraw");
                             }
                             else
                             {
                                 Console.WriteLine("How much: ");
-                                var amountToWithdraw = int.Parse(Console.ReadLine());
+                                // var amountToWithdraw = int.Parse(Console.ReadLine());
                                 transaction.WithdrawChecking(transaction, amountToWithdraw);
                                 Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
                                 database.AddTransaction(transaction);
@@ -245,9 +246,24 @@ namespace FirstBankOfSuncoast
                     // View Transactions
                     case "V":
                         var allTransactions = database.GetTransactions();
-                        foreach (var transactionsToShow in allTransactions)
+                        Console.WriteLine("View which account? (C)hecking or (S)avings");
+                        askUserCheckingOrSavings = Console.ReadLine().ToUpper();
+
+                        if (askUserCheckingOrSavings == "C")
                         {
-                            Console.WriteLine($"{transactionsToShow.TransactionDate} - {transactionsToShow.TransactionType}-{transactionsToShow.AccountType} - ${transactionsToShow.Amount}");
+                            var viewChecking = allTransactions.Where(transaction => transaction.AccountType == "Checking");
+                            foreach (var transactionsToShow in viewChecking)
+                            {
+                                Console.WriteLine($"{transactionsToShow.TransactionDate} - {transactionsToShow.TransactionType} - {transactionsToShow.AccountType} - ${transactionsToShow.Amount}");
+                            }
+                        }
+                        else
+                        {
+                            var viewSavings = allTransactions.Where(transaction => transaction.AccountType == "Savings");
+                            foreach (var transactionsToShow in viewSavings)
+                            {
+                                Console.WriteLine($"{transactionsToShow.TransactionDate} - {transactionsToShow.TransactionType} - {transactionsToShow.AccountType} - ${transactionsToShow.Amount}");
+                            }
                         }
                         break;
 
