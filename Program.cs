@@ -52,12 +52,12 @@ namespace FirstBankOfSuncoast
         public int Amount { get; set; }
         public string TransactionType { get; set; }
         public DateTime TransactionDate { get; set; } = DateTime.Now;
-        public int Withdraw()
-        {
-            var negNumber = 0;
-            var newTotal = Amount - negNumber;
-            return newTotal;
-        }
+        // public int Withdraw()
+        // {
+        //     var negNumber = 0;
+        //     var newTotal = Amount - negNumber;
+        //     return newTotal;
+        // }
     }
 
     class Program
@@ -65,6 +65,7 @@ namespace FirstBankOfSuncoast
         // Greeting User
         static void DisplayGreeting()
         {
+            Console.WriteLine("");
             Console.WriteLine("------------------------------------------");
             Console.WriteLine("    Welcome to First Bank of Suncoast!    ");
             Console.WriteLine("------------------------------------------");
@@ -215,16 +216,15 @@ namespace FirstBankOfSuncoast
 
                             if (getSum < amountToWithdraw)
                             {
-                                Console.WriteLine("You do not have enough funds to withdraw");
+                                Console.WriteLine("You do not have enough funds to withdraw...");
                             }
                             else
                             {
-                                // Console.WriteLine($"{getSum}");
                                 transaction.WithdrawChecking(transaction, amountToWithdraw);
                                 Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
                                 database.AddTransaction(transaction);
                                 database.SaveTransactionToCSV();
-                                Console.WriteLine($"{transaction.Amount}");
+                                Console.WriteLine($"Withdrawing: ${transaction.Amount}");
                             }
                         }
                         //Savings
@@ -237,7 +237,7 @@ namespace FirstBankOfSuncoast
                             var amountToWithdraw = int.Parse(Console.ReadLine());
                             if (getSumSaving < amountToWithdraw)
                             {
-                                Console.WriteLine("You do not have enough funds to withdraw");
+                                Console.WriteLine("You do not have enough funds to withdraw...");
                             }
                             else
                             {
@@ -246,7 +246,7 @@ namespace FirstBankOfSuncoast
                                 Console.WriteLine("You're transaction will reflect in your account in 3-5 days");
                                 database.AddTransaction(transaction);
                                 database.SaveTransactionToCSV();
-                                Console.WriteLine($"{transaction.Amount}");
+                                Console.WriteLine($"Withdrawing: ${transaction.Amount}");
                             }
                         }
                         break;
@@ -260,6 +260,7 @@ namespace FirstBankOfSuncoast
                         // Checking
                         if (askUserCheckingOrSavings == "C")
                         {
+                            Console.WriteLine($"Now viewing your checking account transaction history.");
                             var viewChecking = allTransactions.Where(transaction => transaction.AccountType == "Checking");
                             foreach (var transactionsToShow in viewChecking)
                             {
@@ -269,6 +270,7 @@ namespace FirstBankOfSuncoast
                         // Savings
                         else
                         {
+                            Console.WriteLine($"Now viewing your savings account transaction history.");
                             var viewSavings = allTransactions.Where(transaction => transaction.AccountType == "Savings");
                             foreach (var transactionsToShow in viewSavings)
                             {
